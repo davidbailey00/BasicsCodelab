@@ -4,11 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.Divider
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,19 +39,25 @@ fun MyApp(content: @Composable () -> Unit) {
 }
 
 @Composable
-fun MyScreenContent(names: List<String> = listOf("Android", "Rouge")) {
+fun MyScreenContent(names: List<String> = List(1000) { "Android #$it" }) {
     val counterState = remember { mutableStateOf(0) }
 
-    Column {
-        for (name in names) {
-            Greeting(name)
-            Divider(color = Color.Black)
-        }
-        Divider(color = Color.Transparent, thickness = 32.dp)
+    Column(Modifier.fillMaxHeight()) {
+        NameList(names, Modifier.weight(1f))
         Counter(
             count = counterState.value,
             updateCount = { newCount -> counterState.value = newCount }
         )
+    }
+}
+
+@Composable
+fun NameList(names: List<String>, modifier: Modifier = Modifier) {
+    LazyColumn(modifier) {
+        items(names) { name ->
+            Greeting(name = name)
+            Divider(color = Color.Black)
+        }
     }
 }
 
@@ -62,7 +68,12 @@ fun Greeting(name: String) {
 
 @Composable
 fun Counter(count: Int, updateCount: (Int) -> Unit) {
-    Button(onClick = { updateCount(count + 1) }) {
+    Button(
+        onClick = { updateCount(count + 1) },
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = if (count > 5) Color.Green else Color.White
+        )
+    ) {
         Text("I've been tapped $count times")
     }
 }
