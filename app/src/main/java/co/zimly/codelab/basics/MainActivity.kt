@@ -72,9 +72,9 @@ fun Greeting(name: String) {
     Text(
         text = "Hello $name!",
         modifier = Modifier
-            .padding(24.dp)
             .background(color = backgroundColor)
             .clickable(onClick = { isSelected = !isSelected })
+            .padding(24.dp)
     )
 }
 
